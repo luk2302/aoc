@@ -2,23 +2,31 @@
 
 def aoc(input_path, expected_solution=None):
     print(f"reading and processing {input_path}")
-    day_input = open(input_path).read().splitlines()
-    # day_input = open(input_path).readlines()  # with newlines
-    # day_input = open(input_path).read()  # without line split
+    with open(input_path) as input_file:
+        day_input = input_file.read().splitlines()
+        # day_input = input_file.readlines()  # with newlines
+        # day_input = input_file.read()  # without line splits
 
     input_line_count = len(day_input)
+    input_line_length = len(day_input[0])
+
 
 
     # solution starts here #
 
-
+    count = 0
     for index in range(input_line_count):
         line = day_input[index]
+        inp, out = line.split("|")
+        digits = out.rstrip().split(" ")
+        digits = [digit for digit in digits if len(digit) in [2, 4, 3, 7]]
+        count += len(digits)
 
-    solution = 0
+    solution = count
 
 
     # solution ends here #
+
 
 
     print(f"solution: {solution}")
@@ -32,7 +40,7 @@ def aoc(input_path, expected_solution=None):
 aoc_day = __file__.split("/")[-2]
 print(f"---------+ Day {aoc_day} example +-----------------------------------------------------------------------")
 print("")
-expected_solution = None
+expected_solution = 26
 aoc("example.txt", expected_solution)
 print("")
 print(f"---------+ Day {aoc_day} solution +----------------------------------------------------------------------")
