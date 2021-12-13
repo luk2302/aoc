@@ -10,14 +10,14 @@ import requests
 
 # Ja, der Code von den Tagesaufgaben ist oft schon nicht schön, aber _dieser_ Code ist nochmal ne Nummer schlimmer.
 # Ist halt so gewachsen...
-
-if not os.path.isfile("session_cookie"):
+path = os.path.join(sys.path[0], 'session_cookie')
+if not os.path.isfile(path):
     print("Please provide a session_cookie file next to the script to be able to access the private leaderboard.")
     print("The session_cookie is set by the Advent of Code website, can be retrieved via the browser and should be 96 random hexadecimal chars.")
     sys.exit()
 
 try:
-    json_data = requests.get("https://adventofcode.com/2021/leaderboard/private/view/486446.json", cookies={"session": open("session_cookie").read()}).json()
+    json_data = requests.get("https://adventofcode.com/2021/leaderboard/private/view/486446.json", cookies={"session": open(path).read()}).json()
 except json.decoder.JSONDecodeError:
     print("Your session_cookie seems to be invalid, please double-check.")
     sys.exit()
@@ -80,7 +80,7 @@ for day in range(1, today + 1):
             print(f"{o}. {sol['member']} - {datetime.datetime.fromtimestamp(sol['2']['get_star_ts']) - datetime.datetime.fromtimestamp(sol['1']['get_star_ts'])}")
 
 print("")
-print(f"Overall Scores ({num_users} players)")
+print(f"Overall Scores after {today} days ({num_users} players, {len(scores)} non-zero)")
 o = 0
 yesterday_scores = {user: (position + 1, score) for position, (user, score) in enumerate(sorted(yesterday_scores.items(), key=lambda x: x[1], reverse=True))}
 
@@ -96,11 +96,11 @@ for user, score in sorted(scores.items(), key=lambda x: x[1], reverse=True):
     actual_stars = score - yesterday_score
     relative_star = actual_stars - expected_stars
     relative_star_str = "=0" if relative_star == 0 else (f"+{relative_star}" if relative_star > 0 else relative_star)
-    table_data.append([o, user, score, position_change_str, relative_star_str, missing_stars_str])
+    table_data.append([o, position_change_str, user, score, relative_star_str, missing_stars_str])
 
 
 string = tabulate(
     table_data,
-    headers=["Rank", "Name", "Score", "Change", "Relative score delta", "Missing parts"],
+    headers=["Rank", "Change", "Name", "Score", "Relative score delta", "Missing parts"],
 )
 print(string)
