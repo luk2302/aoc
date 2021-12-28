@@ -23,6 +23,7 @@ except json.decoder.JSONDecodeError:
     sys.exit()
 
 today = datetime.datetime.now().day if len(sys.argv) == 1 else int(sys.argv[1])
+today = min(25, max(1, today))
 scores = {}
 num_users = len(json_data["members"])
 print(f"Day {today} results")
