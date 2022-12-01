@@ -2,7 +2,7 @@
 
 def aoc(input_path, expected_solution=None):
     print(f"reading and processing {input_path}")
-    day_input = open(input_path).read().splitlines()
+    day_input = open(input_path).read().split("\n")
     # day_input = open(input_path).readlines()  # with newlines
     # day_input = open(input_path).read()  # without line split
 

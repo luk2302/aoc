@@ -16,8 +16,9 @@ if not os.path.isfile(path):
     print("The session_cookie is set by the Advent of Code website, can be retrieved via the browser and should be 96 random hexadecimal chars.")
     sys.exit()
 
+year = 2022
 try:
-    json_data = requests.get("https://adventofcode.com/2021/leaderboard/private/view/486446.json", cookies={"session": open(path).read()}).json()
+    json_data = requests.get(f"https://adventofcode.com/{year}/leaderboard/private/view/486446.json", cookies={"session": open(path).read().strip()}).json()
 except json.decoder.JSONDecodeError:
     print("Your session_cookie seems to be invalid, please double-check.")
     sys.exit()
@@ -39,7 +40,7 @@ for day in range(1, today + 1):
             if str(day) in member["completion_day_level"]:
                 solutions.append({"member": member["name"] or f"anon # {member['id']}", **member["completion_day_level"][str(day)]})
 
-    start = datetime.datetime(2021, 12, day, 6, 00)
+    start = datetime.datetime(year, 12, day, 6, 00)
 
     if day == today:
         print("first star solution times")
@@ -80,15 +81,16 @@ for day in range(1, today + 1):
         if day == today:
             print(f"{o}. {sol['member']} - {datetime.datetime.fromtimestamp(sol['2']['get_star_ts']) - datetime.datetime.fromtimestamp(sol['1']['get_star_ts'])}")
 
+yesterday_scores = {user: (position + 1, score) for position, (user, score) in enumerate(sorted(yesterday_scores.items(), key=lambda x: x[1], reverse=True))}
+
 print("")
 print(f"Overall Scores after {today} days ({num_users} players, {len(scores)} non-zero)")
 o = 0
-yesterday_scores = {user: (position + 1, score) for position, (user, score) in enumerate(sorted(yesterday_scores.items(), key=lambda x: x[1], reverse=True))}
 
 table_data = []
 for user, score in sorted(scores.items(), key=lambda x: x[1], reverse=True):
     o += 1
-    yesterday_pos, yesterday_score = yesterday_scores[user]
+    yesterday_pos, yesterday_score = yesterday_scores[user] if yesterday_scores else (1, 0)
     position_change = yesterday_pos - o
     position_change_str = "=0" if position_change == 0 else (f"+{position_change}" if position_change > 0 else position_change)
     missing_stars = today * 2 - stars[user]
