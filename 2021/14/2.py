@@ -18,7 +18,7 @@ def aoc(input_path, expected_solution=None):
         r, e = line.split(" -> ")
         repl[r] = e
 
-    data_grouped = defaultdict(lambda : 0)
+    data_grouped = defaultdict(lambda: 0)
     for i in zip(data, data[1:]):
         data_grouped[i] += 1
 
