@@ -19,9 +19,9 @@
     });
 })();
 
-function handle(DATA) {
-    let members = Object.keys(DATA.members).map(function (key) {
-        return DATA.members[key];
+function handle(scoreboard_data) {
+    let members = Object.keys(scoreboard_data.members).map(function (key) {
+        return scoreboard_data.members[key];
     });
 
     members = members.filter(member => member.local_score !== 0)
@@ -74,6 +74,7 @@ function handle(DATA) {
         html_objects[i].dataset.local_score = members[i].local_score
         html_objects[i].dataset.first_star = members[i].first_star
         html_objects[i].dataset.second_star = members[i].second_star
+        html_objects[i].dataset.second_star_offset = (members[i].second_star && members[i].first_star) ? members[i].second_star - members[i].first_star : undefined
         html_objects[i].children[day_to_check].textContent = members[i].daily_score_str.padEnd(maximum_score_length, " ")
     }
 
@@ -113,7 +114,9 @@ function setupSorting() {
     p.appendChild(addButton("Score", "local_score", -1))
     p.appendChild(document.createTextNode(", "))
     p.appendChild(addButton("First star", "first_star", 1))
-    p.appendChild(document.createTextNode(" or "))
+    p.appendChild(document.createTextNode(", "))
     p.appendChild(addButton("Second star", "second_star", 1))
+    p.appendChild(document.createTextNode(" or "))
+    p.appendChild(addButton("Second star offset", "second_star_offset", 1))
     p.appendChild(document.createTextNode("."))
 }
