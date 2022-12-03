@@ -88,7 +88,15 @@ function sort(e) {
     let scoreboard = html_objects[0].parentElement
     html_objects.shift()
 
-    html_objects.sort((a, b) => (a.dataset[attribute] - b.dataset[attribute])* inverted)
+    html_objects.sort((a, b) => {
+        if (a.dataset[attribute] === 'undefined') {
+            return inverted
+        }
+        if (b.dataset[attribute] === 'undefined') {
+            return inverted * -1
+        }
+        return (a.dataset[attribute] - b.dataset[attribute]) * inverted
+    })
 
     for (let i = 0; i < html_objects.length; i++) {
         scoreboard.appendChild(html_objects[i])
