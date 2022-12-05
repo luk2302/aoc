@@ -36,9 +36,9 @@ def aoc(input_path, expected_solution=None):
                 stacks[i].append(ss[:3])
 
     for (n, f, t) in moves:
-        for _ in range(n):
-            s = stacks[f-1].pop()
-            stacks[t-1].append(s)
+        s = stacks[f-1][-n:]
+        stacks[f-1] = stacks[f-1][:-n]
+        stacks[t-1] += reversed(s)
 
     solution = "".join([s[-1][1] for s in stacks])
 
