@@ -9,6 +9,16 @@
 // @grant        none
 // ==/UserScript==
 
+/*
+
+This is a userscript that can be used, e.g. via Tampermonkey in your browser.
+
+The userscript applies to private leaderboards and adds the ability to see and
+sort by the solution times for the first or second star on each day and also allows
+you to check the results and scores of previous days.
+
+ */
+
 (function() {
     'use strict';
 
