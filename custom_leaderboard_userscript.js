@@ -26,14 +26,14 @@ you to check the results and scores of previous days.
     fetch(`${parts[parts.length - 1]}.json`).then(function(response) {
         return response.json();
     }).then(function(data) {
-        handle(data);
+        customizeScoreboard(data);
     });
 })();
 
 let players = []
 let year = parseInt(document.location.href.split("/")[3])
 
-function handle(scoreboardData) {
+function customizeScoreboard(scoreboardData) {
     let members = Object.keys(scoreboardData.members).map(function (key) {
         return scoreboardData.members[key];
     });
@@ -42,7 +42,7 @@ function handle(scoreboardData) {
     members.sort((a, b) => b.local_score - a.local_score)
 
     let now = new Date()
-    let dayToCheck = now.getUTCHours() < 6 ? now.getUTCDate() - 1 : now.getUTCDate()
+    let dayToCheck = now.getUTCHours() < 5 ? now.getUTCDate() - 1 : now.getUTCDate()
     if (year < now.getUTCFullYear()) {
         dayToCheck = 25
     }
@@ -201,6 +201,7 @@ function sort(e) {
     let attribute = e.target.dataset.attribute
     let inverted = e.target.dataset.inverted
     sortInternal(attribute, inverted)
+    window.localStorage.setItem("sort", attribute)
 }
 
 function sortInternal(attribute, inverted) {
@@ -232,6 +233,7 @@ function createButton(text, attribute, inverted) {
     element.dataset.attribute = attribute
     element.dataset.inverted = inverted
     element.textContent = `[${text}]`
+    element.id = `sort-${attribute}`
     element.addEventListener("click", sort)
     return element
 }
@@ -241,9 +243,7 @@ function setupSorting() {
     let p = document.createElement("p")
     scoreboard.parentElement.insertBefore(p, scoreboard)
     p.appendChild(document.createTextNode("Sort by "))
-    let firstButton = createButton("Score", "local_score", -1)
-    p.appendChild(firstButton)
-    firstButton.click()
+    p.appendChild(createButton("Score", "local_score", -1))
     p.appendChild(document.createTextNode(", "))
     p.appendChild(createButton("First star", "first_star", 1))
     p.appendChild(document.createTextNode(", "))
@@ -251,4 +251,13 @@ function setupSorting() {
     p.appendChild(document.createTextNode(" or "))
     p.appendChild(createButton("Second star offset", "second_star_offset", 1))
     p.appendChild(document.createTextNode("."))
+
+
+    let localSort = window.localStorage.getItem("sort")
+    console.log(localSort)
+    if (localSort !== null) {
+        document.getElementById(`sort-${localSort}`).click()
+    } else {
+        document.getElementById(`sort-local_score`).click()
+    }
 }
