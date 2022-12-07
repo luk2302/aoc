@@ -77,7 +77,8 @@ function customizeScoreboard(scoreboardData) {
                 "local_score_original": member.local_score,
                 "daily_times_str": dailyTimesStr,
                 "first_star": firstStar,
-                "second_star": secondStar
+                "second_star": secondStar,
+                "name": member.name
             })
         }
         return {
@@ -90,8 +91,13 @@ function customizeScoreboard(scoreboardData) {
     for (let i = players.length; i < htmlObjects.length; i++) {
         htmlObjects[i].remove()
     }
+    let thisPlayer = document.getElementsByClassName("user")[0].childNodes[0].textContent.trim()
+    let matchingPlayers = players.filter(player => player.name === thisPlayer)
     for (let i = 0; i < players.length; i++) {
         htmlObjects[i].dataset.playerIndex = String(i)
+        if (matchingPlayers.length === 1 && htmlObjects[i].getElementsByClassName("privboard-name")[0].childNodes[0].textContent.trim() === thisPlayer) {
+            htmlObjects[i].classList.add("currentUser")
+        }
     }
     computeScores(htmlObjects.length)
     setScoreboardAttributes(dayToCheck)
@@ -160,7 +166,7 @@ function selectDay(e) {
 }
 
 function createCss() {
-    let css = '.activeSort { color: lightgreen; } .activeDay { color: lightgreen; }'
+    let css = '.activeSort { color: lightgreen; } .activeDay { color: lightgreen; } .currentUser { color: red; } .currentUser a { color: red; }'
     let style = document.createElement('style')
     document.head.appendChild(style);
     style.appendChild(document.createTextNode(css));

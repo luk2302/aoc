@@ -1,3 +1,10 @@
+def solve(input_data):
+    input_line_count = len(input_data)
+    solution = 0
+    for index in range(input_line_count):
+        line = input_data[index]
+
+    return solution
 
 
 def aoc(input_path, expected_solution=None):
@@ -6,20 +13,7 @@ def aoc(input_path, expected_solution=None):
     # day_input = open(input_path).readlines()  # with newlines
     # day_input = open(input_path).read()  # without line split
 
-    input_line_count = len(day_input)
-
-
-    # solution starts here #
-
-
-    solution = 0
-    for index in range(input_line_count):
-        line = day_input[index]
-
-
-
-    # solution ends here #
-
+    solution = solve(day_input)
 
     print(f"solution: {solution}")
     if expected_solution:
@@ -32,8 +26,7 @@ def aoc(input_path, expected_solution=None):
 aoc_day = __file__.split("/")[-2]
 print(f"---------+ Day {aoc_day} example +-----------------------------------------------------------------------")
 print("")
-expected_solution = None
-aoc("example.txt", expected_solution)
+aoc("example.txt", "what is expected??")
 print("")
 print(f"---------+ Day {aoc_day} solution +----------------------------------------------------------------------")
 print("")
