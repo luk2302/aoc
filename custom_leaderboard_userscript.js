@@ -13,9 +13,15 @@
 
 This is a userscript that can be used, e.g. via Tampermonkey in your browser.
 
-The userscript applies to private leaderboards and adds the ability to see and
-sort by the solution times for the first or second star on each day and also allows
-you to check the results and scores of previous days.
+The userscript applies to any private leaderboard, for all events / years and adds a coupld of things:
+* sorting options, you can sort the leaderboard by
+** the actual score
+** the solution times for the first star
+** the solution times for the second star
+** the difference between the solution times for first and second star
+* ability to display and sort previous days instead of just showing the current day
+* highlighting to your own row
+* (only visual) removal of inactive users
 
  */
 
@@ -34,8 +40,8 @@ let players = []
 let year = parseInt(document.location.href.split("/")[3])
 
 function customizeScoreboard(scoreboardData) {
-    let members = Object.keys(scoreboardData.members).map(function (key) {
-        return scoreboardData.members[key];
+    let members = Object.keys(scoreboardData.members).map(function (id) {
+        return {...scoreboardData.members[id], id};
     });
 
     members = members.filter(member => member.local_score !== 0)
@@ -78,11 +84,12 @@ function customizeScoreboard(scoreboardData) {
                 "daily_times_str": dailyTimesStr,
                 "first_star": firstStar,
                 "second_star": secondStar,
-                "name": member.name
+                "name": member.name,
             })
         }
         return {
             "name": member.name,
+            "id": member.id,
             "days": days,
         }
     })
@@ -99,11 +106,38 @@ function customizeScoreboard(scoreboardData) {
             htmlObjects[i].classList.add("currentUser")
         }
     }
+    deduplicateUsernames(players)
     computeScores(htmlObjects.length)
     setScoreboardAttributes(dayToCheck)
     setupSorting()
     setupDaySelection(dayToCheck)
     createCss()
+}
+
+function deduplicateUsernames(players) {
+    let names = new Set()
+    let duplicates = []
+    for (let i = 0; i < players.length; i++) {
+        let name = players[i].name
+        if (name === null) {
+            continue
+        }
+        if (names.has(name)) {
+            duplicates.push(name)
+        } else {
+            names.add(name)
+        }
+    }
+    let html = getScoreboardRows()
+    duplicates.forEach(duplicate => {
+        for (let i = 0; i < players.length; i++) {
+            let name = players[i].name
+            let id = players[i].id
+            if (name === duplicate) {
+                html[i].lastChild.childNodes[0].textContent = `${name} ${id} `
+            }
+        }
+    })
 }
 
 function computeScores(numUnfilteredPlayers) {
@@ -260,7 +294,6 @@ function setupSorting() {
 
 
     let localSort = window.localStorage.getItem("sort")
-    console.log(localSort)
     if (localSort !== null) {
         document.getElementById(`sort-${localSort}`).click()
     } else {

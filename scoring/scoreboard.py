@@ -2,7 +2,7 @@ import datetime
 import json
 import os.path
 import sys
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from tabulate import tabulate
 
@@ -29,6 +29,10 @@ scores = {}
 num_users = len(json_data["members"])
 print(f"Day {today} results")
 print("")
+
+name_mapping = Counter([member["name"] for member in json_data["members"].values() if member["name"]])
+name_mapping = {member["id"]: (member["name"] or f'anon # {member["id"]}') if name_mapping[member["name"]] <= 1 else f'{member["name"]} {member["id"]}' for member in json_data["members"].values()}
+
 yesterday_scores = None
 stars = defaultdict(lambda: 0)
 for day in range(1, today + 1):
@@ -38,7 +42,7 @@ for day in range(1, today + 1):
     for member in json_data["members"].values():
         if "completion_day_level" in member:
             if str(day) in member["completion_day_level"]:
-                solutions.append({"member": member["name"] or f"anon # {member['id']}", **member["completion_day_level"][str(day)]})
+                solutions.append({"member": name_mapping[member["id"]], **member["completion_day_level"][str(day)]})
 
     start = datetime.datetime(year, 12, day, 6, 00)
 
