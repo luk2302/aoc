@@ -1,12 +1,26 @@
 def solve(input_data):
-    input_line_count = len(input_data)
     solution = 0
-    for index in range(0, input_line_count, 1):
-        line = input_data[index]
+    trees = [[int(t) for t in l] for l in input_data]
+
+    for r in range(1, len(trees) - 1):
+        row = trees[r]
+        for c in range(1, len(row) - 1):
+            t = row[c]
+            left = all([trees[r1][c] < t for r1 in range(r)])
+            right = all([trees[r1][c] < t for r1 in range(r + 1, len(trees))])
+            top = all([trees[r][c1] < t for c1 in range(c)])
+            bottom = all([trees[r][c1] < t for c1 in range(c + 1, len(row))])
+
+            visible = left or right or top or bottom
+
+            if visible:
+                solution += 1
+
+    solution += len(trees) * 2
+    solution += (len(trees[0]) - 2) * 2
 
 
     return solution
-
 
 
 def aoc(input_path, expected_solution=None):
@@ -32,7 +46,7 @@ def aoc(input_path, expected_solution=None):
 aoc_day = __file__.split("/")[-2]
 print(f"---------+ Day {aoc_day} example +-----------------------------------------------------------------------")
 print("")
-aoc("example.txt", None)
+aoc("example.txt", 21)
 print("")
 print(f"---------+ Day {aoc_day} solution +----------------------------------------------------------------------")
 print("")
