@@ -1,4 +1,4 @@
-
+from utils.graph import bfs
 
 
 def aoc(input_path, expected_solution=None):
@@ -8,37 +8,15 @@ def aoc(input_path, expected_solution=None):
 
     # solution starts here #
 
-    level = [[(int(i), -1) for i in l] for l in day_input]
+    level = [[int(i) for i in l] for l in day_input]
+    level = [[level[x % len(level)][y % len(level[0])] + x // len(level) + y // len(level[0]) for y in range(len(level[0]) * 5)] for x in range(len(level) * 5)]
+    level = [[level[x][y] if level[x][y] <= 9 else level[x][y] % 9 for y in range(len(level[0]))] for x in range(len(level))]
 
-    new_level = [[((level[x % len(level)][y % len(level[0])][0] + x // len(level) + y // len(level[0])), -1) for y in range(len(level[0]) * 5)] for x in range(len(level) * 5)]
-
-    level = new_level
-
-    level[0][0] = (0, 0)
-    steps = [(0, 0)]
-    step_set = set()
-    step_set.add(steps[0])
-    while steps:
-        step = steps[-1]
-        steps = steps[:-1]
-        step_set.remove(step)
-
-        x, y = step
-        _, score = level[x][y]
-        for xn, yn in [(x, y-1), (x-1, y), (x+1, y), (x, y+1)]:
-            if 0 <= xn < len(level) and 0 <= yn < len(level[0]):
-                cn, sn = level[xn][yn]
-                if cn > 9:
-                    cn = cn % 9
-                new_score = score + cn
-                if new_score < sn or sn == -1:
-                    level[xn][yn] = (cn, new_score)
-                    if (xn, yn) not in step_set:
-                        steps = [(xn, yn)] + steps
-                        step_set.add((xn, yn))
-
-    solution = level[-1][-1][1]
-
+    vp = lambda c, n: True
+    cost = lambda c, n: level[n[0]][n[1]]
+    end = (len(day_input) * 5 - 1, len(day_input[0]) * 5 - 1)
+    res = bfs((0, 0), end, level, vp, cost, True)
+    solution = res[end][0]
 
     # solution ends here #
 

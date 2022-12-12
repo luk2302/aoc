@@ -1,4 +1,4 @@
-
+from utils.graph import bfs, display
 
 
 def aoc(input_path, expected_solution=None):
@@ -8,27 +8,16 @@ def aoc(input_path, expected_solution=None):
 
     # solution starts here #
 
-    level = [[(int(i), -1) for i in l] for l in day_input]
+    m = [[int(i) for i in l] for l in day_input]
+    vp = lambda c, n: True
+    cost = lambda c, n: m[n[0]][n[1]]
+    end = (len(day_input) - 1, len(day_input[0]) - 1)
+    res = bfs((0, 0), end, m, vp, cost, True)
+    solution = res[end][0]
 
-    level[0][0] = (0, 0)
-    steps = [(0, 0)]
-    while steps:
-        print(len(steps))
-        step = steps[-1]
-        steps = steps[:-1]
-
-        x, y = step
-        _, score = level[x][y]
-        for xn, yn in [(x, y-1), (x-1, y), (x+1, y), (x, y+1)]:
-            if 0 <= xn < len(level) and 0 <= yn < len(level[0]):
-                cn, sn = level[xn][yn]
-                new_score = score + cn
-                if new_score < sn or sn == -1:
-                    level[xn][yn] = (cn, new_score)
-                    steps = [(xn, yn)] + steps
-
-    solution = level[-1][-1][1]
-
+    display(res, end[1] + 1, end[0] + 1, end)
+    print(" ")
+    display(res, end[1] + 1, end[0] + 1, end, m)
 
     # solution ends here #
 

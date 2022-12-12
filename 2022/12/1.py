@@ -1,21 +1,4 @@
-def bfs(start, target, m):
-    shortest = {}
-    q = [(start, [start])]
-    while q:
-        (e, path) = q.pop(0)
-        l = len(path)
-        if shortest.get(e, 9999) > l:
-            shortest[e] = l
-        else:
-            continue
-        for (xn, yn) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            n = (xn + e[0], yn + e[1])
-            if 0 <= n[0] < len(m) and 0 <= n[1] < len(m[0]):
-                if m[n[0]][n[1]] - m[e[0]][e[1]] <= 1:
-                    if n == target:
-                        return len(path)
-                    if n not in set(path):
-                        q.append((n, path + [n]))
+from utils.graph import bfs, display
 
 
 def solve(d):
@@ -34,7 +17,15 @@ def solve(d):
             if l[y] == "E":
                 end = (x, y)
 
-    return bfs(start, end, m)
+    vp = lambda c, n: m[n[0]][n[1]] - m[c[0]][c[1]] <= 1
+    cost = lambda c, n: 1
+
+    res = bfs(start, end, m, vp, cost, True)
+    display(res, w, lc, end)
+    print("")
+    display(res, w, lc, end, m)
+
+    return res[end][0]
 
 
 
@@ -62,6 +53,7 @@ aoc_day = __file__.split("/")[-2]
 print(f"---------+ Day {aoc_day} example +-----------------------------------------------------------------------")
 print("")
 aoc("example.txt", 31)
+aoc("example2.txt", 43)
 print("")
 print(f"---------+ Day {aoc_day} solution +----------------------------------------------------------------------")
 print("")
