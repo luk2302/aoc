@@ -49,7 +49,7 @@ function customizeScoreboard(scoreboardData) {
 
     let now = new Date()
     let dayToCheck = now.getUTCHours() < 5 ? now.getUTCDate() - 1 : now.getUTCDate()
-    if (year < now.getUTCFullYear()) {
+    if (year < now.getUTCFullYear() || dayToCheck > 25) {
         dayToCheck = 25
     }
 
