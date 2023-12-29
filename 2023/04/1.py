@@ -11,6 +11,14 @@ def solve(d: list[str]):
     for r in range(0, lc, 1):
         l = d[r]
 
+        _, g = l.split(": ")
+        w, p = g.split(" | ")
+        w = [int(x) for x in w.split(" ") if x.strip()]
+        p = [int(x) for x in p.split(" ") if x.strip()]
+        m = len(set(w).intersection(set(p)))
+
+        if m > 0:
+            solution += 2 ** (m - 1)
 
     return solution
 
@@ -40,21 +48,19 @@ def aoc(file_name, expected_solution=None, output_path=None):
 
     if expected_solution:
         if expected_solution != solution:
-            print(f"WARNING: solution does not match expected solution of {expected_solution}, exiting...")
+            print(f"WARNING: solution does not match expected solution of {expected_solution}, will not submit...")
             return False
         return True
     return False
 
 
 aoc_day = __file__.split("/")[-2]
-
-print(f"---------+ Day {aoc_day} example +-------------------------------------------------------------------\n")
-
-example_matched = False  # EXAMPLE_MARKER
-
-if example_matched:
-    print(f"\n---------+ Day {aoc_day} solution +------------------------------------------------------------------\n")
-
-    aoc("input.txt", None, sys.argv[1])
-
-    print("\n----------------------------------------------------------------------------------------------")
+print(f"---------+ Day {aoc_day} example +-----------------------------------------------------------------------")
+print("")
+example_matched = aoc("example.txt", 13)  # EXAMPLE_MARKER
+print("")
+print(f"---------+ Day {aoc_day} solution +----------------------------------------------------------------------")
+print("")
+aoc("input.txt", None, sys.argv[1] if example_matched else None)
+print("")
+print("--------------------------------------------------------------------------------------------------")
