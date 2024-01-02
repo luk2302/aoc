@@ -25,8 +25,7 @@ parts = {
         "answer_path": os.path.join(day_path, '2.py.out'),
     }
 }
-example_call_line = '\nexample_matched = aoc("example.txt", "EXAMPLE_ANSWER")  # EXAMPLE_MARKER\n'
-
+example_call_line = '\naoc_day(__file__, solve, "input.txt", "example.txt", "EXAMPLE_ANSWER")  # EXAMPLE_MARKER\n'
 
 
 def copy_with_replaced_example(source, dest, replacement):
@@ -56,21 +55,20 @@ def load_day():
 
     print('Please enter the example content:\n')
 
+    consecutive_nl = 0
     example_lines = []
-    while True:
+    while consecutive_nl < 2:
         example_line = input()
-        if example_line:
-            example_lines.append(example_line)
-        else:
-            break
-    example = '\n'.join(example_lines)
+        example_lines.append(example_line)
+        consecutive_nl = 0 if example_line else consecutive_nl + 1
+    example = '\n'.join(example_lines[:-1])
 
     with open(os.path.join(day_path, 'example.txt'), 'w') as f:
         f.write(example)
 
     example_answer = input('Please enter the example answer: ')
 
-    copy_with_replaced_example(os.path.join(sys.path[0], 'template', '1.py'), parts[1]["path"], example_answer)
+    copy_with_replaced_example(os.path.join(sys.path[0], 'template', 'template.py'), parts[1]["path"], example_answer)
 
 
 def request_aoc(method, url, headers=None, data=None):
@@ -110,7 +108,7 @@ class SolutionChangeHandler(FileSystemEventHandler):
                 ...
 
         print("\nRunning solution")
-        cmd = f"python {parts[self.part]['path']} {parts[self.part]['answer_path']}"
+        cmd = f"PYTHONPATH=\".\" python {parts[self.part]['path']} {parts[self.part]['answer_path']}"
         self.running = subprocess.Popen(cmd, shell=True, preexec_fn=os.setsid)
 
 
@@ -130,10 +128,14 @@ class SolutionChangeHandler(FileSystemEventHandler):
             headers={"content-type": "application/x-www-form-urlencoded"}
         )
         response_text = response.text
-        right = "s the right answer" in response_text
-        if right:
+        if "s the right answer" in response_text:
             print("Submission was correct")
-            self.submitted_successfully = right
+            self.submitted_successfully = True
+        elif "Did you already complete it" in response_text:
+            self.submitted_successfully = True
+            print("You already completed the level")
+        else:
+            print(response_text)
 
 
 def run_day_solution_part(part):

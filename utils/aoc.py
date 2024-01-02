@@ -1,26 +1,9 @@
 import os
 import sys
 
-# SOLUTION GOES HERE
 
-
-def solve(d: list[str]):
-    lc = len(d)
-    w = len(d[0])
-    solution = 0
-    for r in range(0, lc, 1):
-        l = d[r]
-
-
-    return solution
-
-# SOLUTION ENDS HERE
-
-
-
-def aoc(file_name, expected_solution=None, output_path=None):
-    print(f"reading and processing {file_name}")
-    input_path = os.path.join(sys.path[0], file_name)
+def aoc(directory, solve, file_name, expected_solution=None, output_path=None):
+    input_path = os.path.join(directory, file_name)
     day_input = open(input_path).read().split("\n")
     # day_input = open(input_path).readlines()  # with newlines
     # day_input = open(input_path).read()  # without line split
@@ -34,7 +17,7 @@ def aoc(file_name, expected_solution=None, output_path=None):
     print(f"solution: {solution}")
 
     if output_path:
-        with open(output_path, 'w') as f:
+        with open(os.path.join(directory, output_path), 'w') as f:
             f.write(f"{solution}")
             print("wrote solution")
 
@@ -46,15 +29,17 @@ def aoc(file_name, expected_solution=None, output_path=None):
     return False
 
 
-aoc_day = __file__.split("/")[-2]
+def aoc_day(file, solve, input_name, example_name, example_answer):
+    directory = os.path.dirname(file)
+    day = file.split("/")[-2]
 
-print(f"---------+ Day {aoc_day} example +-------------------------------------------------------------------\n")
+    print(f"---------+ Day {day} example +-------------------------------------------------------------------\n")
 
-example_matched = False  # EXAMPLE_MARKER
+    example_matched = aoc(directory, solve, example_name, example_answer)
 
-if example_matched:
-    print(f"\n---------+ Day {aoc_day} solution +------------------------------------------------------------------\n")
+    if example_matched:
+        print(f"\n---------+ Day {day} solution +------------------------------------------------------------------\n")
 
-    aoc("input.txt", None, sys.argv[1])
+        aoc(directory, solve, input_name, None, sys.argv[1] if len(sys.argv) > 1 else None)
 
     print("\n----------------------------------------------------------------------------------------------")
