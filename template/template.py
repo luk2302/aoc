@@ -1,4 +1,7 @@
-from utils.aoc import aoc_day
+from functools import cache
+from utils.aoc import *
+from utils.graph import *
+from utils.simple import *
 
 
 def solve(d: list[str]):

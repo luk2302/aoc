@@ -41,14 +41,14 @@ def load_day():
     print(f"Loading day {year}/{day}")
     if os.path.exists(day_path):
         print("Day already prepared")
-        return
-
-    os.makedirs(day_path, exist_ok=True)
+        return True
 
     response = request_aoc(requests.get, f"https://adventofcode.com/{year}/day/{day}/input")
     if not response.ok:
-        print("Your session_cookie seems to be invalid, please double-check.")
-        sys.exit()
+        print("Failed to retrieve aoc data, either because your session token is invalid or the day cannot be completed yet, retrying...")
+        return False
+
+    os.makedirs(day_path, exist_ok=True)
 
     with open(os.path.join(day_path, 'input.txt'), 'w') as f:
         f.write(response.text.rstrip("\n"))
@@ -61,7 +61,7 @@ def load_day():
         example_line = input()
         example_lines.append(example_line)
         consecutive_nl = 0 if example_line else consecutive_nl + 1
-    example = '\n'.join(example_lines[:-1])
+    example = '\n'.join(example_lines[:-1]).strip('\n')
 
     with open(os.path.join(day_path, 'example.txt'), 'w') as f:
         f.write(example)
@@ -69,6 +69,7 @@ def load_day():
     example_answer = input('Please enter the example answer: ')
 
     copy_with_replaced_example(os.path.join(sys.path[0], 'template', 'template.py'), parts[1]["path"], example_answer)
+    return True
 
 
 def request_aoc(method, url, headers=None, data=None):
@@ -166,7 +167,9 @@ def prepare_part_two():
 
 
 def main():
-    load_day()
+    while not load_day():
+        pass
+
     if not os.path.exists(parts[1]["answer_path"]):
         run_day_solution_part(1)
         if not os.path.exists(parts[2]["path"]):
