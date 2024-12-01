@@ -17,7 +17,7 @@ def v(r):
         if len(x) > len(y):
             (x,y) = (y,x)
 
-        d = sum([0 if x==y else 1 for x,y in zip(''.join([''.join(k) for k in x]), ''.join([''.join(k) for k in y[:len(x)]]))])
+        d = sum([0 if x==y else 1 for x,y in zip(to_str(x), to_str(y[:len(x)]))])
         if d == 1:
             return v
     return None

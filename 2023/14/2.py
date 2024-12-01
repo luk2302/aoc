@@ -25,10 +25,13 @@ def solve(d: list[str]):
 
     patterns = {}
 
+    # probably by pure chance example and real input also give the correct result for 1000 which can be brute forced
+    # that is because the detected cycles of length 7 and 78 are both divisors of 1000000000 - 1000, probably a coincidence in my input
     t = 1000000000
+
     for i in range(t):
         solution = 0
-        f = ''.join([''.join(x) for x in d])
+        f = to_str(d)
         if f in patterns:
             x = patterns[f]
             cycle = i - x
@@ -63,8 +66,6 @@ def solve(d: list[str]):
         for r in range(0, lc, 1):
             solution += sum(1 if x == 'O' else 0 for x in d[r]) * (lc - r)
         print(i, solution)
-
-    return solution
 
 
 aoc_day(__file__, solve, "input.txt", "example.txt", 64)  # EXAMPLE_MARKER
