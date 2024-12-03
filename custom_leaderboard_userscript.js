@@ -95,15 +95,22 @@ function customizeScoreboard(scoreboardData) {
     })
 
     let htmlObjects = getScoreboardRows()
+    // remove inactive users
     for (let i = players.length; i < htmlObjects.length; i++) {
         htmlObjects[i].remove()
     }
+    // highlight current player
     let thisPlayer = document.getElementsByClassName("user")[0].childNodes[0].textContent.trim()
     let matchingPlayers = players.filter(player => player.name === thisPlayer)
     for (let i = 0; i < players.length; i++) {
         htmlObjects[i].dataset.playerIndex = String(i)
         if (matchingPlayers.length === 1 && htmlObjects[i].getElementsByClassName("privboard-name")[0].childNodes[0].textContent.trim() === thisPlayer) {
             htmlObjects[i].classList.add("currentUser")
+        }
+        if (!htmlObjects[i].children[0].classList.contains('privboard-position')) {
+            let posElement = document.createElement("span")
+            posElement.classList.add('privboard-position')
+            htmlObjects[i].insertBefore(posElement, htmlObjects[i].firstChild)
         }
     }
     deduplicateUsernames(players)
@@ -214,25 +221,25 @@ function getScoreboardRows() {
 
 let lastSelectedDay = 0
 function setScoreboardAttributes(day) {
-    day--
+    let d = day - 1
     let htmlObjects = getScoreboardRows()
     let maximumTimesLength = 0;
     let maximumScoreLength = 0;
     for (let i = 0; i < players.length; i++) {
-        maximumTimesLength = Math.max(maximumTimesLength,  players[i].days[day].daily_times_str.length)
-        maximumScoreLength = Math.max(maximumScoreLength,  String(players[i].days[day].local_score).length)
+        maximumTimesLength = Math.max(maximumTimesLength, players[i].days[d].daily_times_str.length)
+        maximumScoreLength = Math.max(maximumScoreLength, String(players[i].days[d].local_score).length)
     }
     for (let i = 0; i < players.length; i++) {
         let player = players[parseInt(htmlObjects[i].dataset.playerIndex)]
-        htmlObjects[i].dataset.local_score_str = String(player.days[day].local_score).padStart(maximumScoreLength, " ")
-        htmlObjects[i].dataset.local_score = player.days[day].local_score
-        htmlObjects[i].dataset.first_star = player.days[day].first_star
-        htmlObjects[i].dataset.second_star = player.days[day].second_star
-        htmlObjects[i].dataset.second_star_offset = (player.days[day].second_star && player.days[day].first_star) ? player.days[day].second_star - player.days[day].first_star : undefined
+        htmlObjects[i].dataset.local_score_str = String(player.days[d].local_score).padStart(maximumScoreLength, " ")
+        htmlObjects[i].dataset.local_score = player.days[d].local_score
+        htmlObjects[i].dataset.first_star = player.days[d].first_star
+        htmlObjects[i].dataset.second_star = player.days[d].second_star
+        htmlObjects[i].dataset.second_star_offset = (player.days[d].second_star && player.days[d].first_star) ? player.days[d].second_star - player.days[d].first_star : undefined
         htmlObjects[i].children[lastSelectedDay + 1].textContent = "*"
-        htmlObjects[i].children[day + 1].textContent = player.days[day].daily_times_str.padEnd(maximumTimesLength, " ")
+        htmlObjects[i].children[d + 1].textContent = player.days[d].daily_times_str.padEnd(maximumTimesLength, " ")
     }
-    lastSelectedDay = day
+    lastSelectedDay = d
 }
 
 function sort(e) {
@@ -259,11 +266,17 @@ function sortInternal(attribute, inverted) {
         return (a.dataset[attribute] - b.dataset[attribute]) * inverted
     })
 
+    let lastScore = 'undefined'
     let num = Math.ceil(Math.log10(players.length + 1))
     for (let i = 0; i < htmlObjects.length; i++) {
         scoreboard.appendChild(htmlObjects[i])
-        htmlObjects[i].children[0].textContent = ` ${String(i+1).padStart(num, " ")})`
+        if (lastScore === htmlObjects[i].dataset[attribute]) {
+            htmlObjects[i].children[0].textContent = ''.padStart(num + 2, ' ')
+        } else {
+            htmlObjects[i].children[0].textContent = ` ${String(i+1).padStart(num, " ")})`
+        }
         htmlObjects[i].childNodes[1].textContent = ` ${htmlObjects[i].dataset.local_score_str} `
+        lastScore = htmlObjects[i].dataset[attribute]
     }
 }
 
