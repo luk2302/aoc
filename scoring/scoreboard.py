@@ -8,22 +8,22 @@ from tabulate import tabulate
 
 import requests
 
-# Ja, der Code von den Tagesaufgaben ist oft schon nicht schön, aber _dieser_ Code ist nochmal ne Nummer schlimmer.
-# Ist halt so gewachsen...
+# disclaimer: this code is ugly af, please don't judge me for having written it years ago...
 path = os.path.join(sys.path[0], 'session_cookie')
 if not os.path.isfile(path):
     print("Please provide a session_cookie file next to the script to be able to access the private leaderboard.")
     print("The session_cookie is set by the Advent of Code website, can be retrieved via the browser and should be 96 random hexadecimal chars.")
     sys.exit()
 
-year = 2022
+board = sys.argv[1]
+year = int(sys.argv[2])
 try:
-    json_data = requests.get(f"https://adventofcode.com/{year}/leaderboard/private/view/486446.json", cookies={"session": open(path).read().strip()}).json()
+    json_data = requests.get(f"https://adventofcode.com/{year}/leaderboard/private/view/{board}.json", cookies={"session": open(path).read().strip()}).json()
 except json.decoder.JSONDecodeError:
     print("Your session_cookie seems to be invalid, please double-check.")
     sys.exit()
 
-today = datetime.datetime.now().day if len(sys.argv) == 1 else int(sys.argv[1])
+today = datetime.datetime.now().day if len(sys.argv) == 3 else int(sys.argv[3])
 today = min(25, max(1, today))
 scores = {}
 num_users = len(json_data["members"])

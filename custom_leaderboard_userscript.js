@@ -114,7 +114,7 @@ function customizeScoreboard(scoreboardData) {
         }
     }
     deduplicateUsernames(players)
-    computeScores(htmlObjects.length)
+    computeScores(members.length)
     setScoreboardAttributes(dayToCheck)
     setupSorting()
     setupDaySelection(dayToCheck)
@@ -235,7 +235,7 @@ function setScoreboardAttributes(day) {
         htmlObjects[i].dataset.local_score = player.days[d].local_score
         htmlObjects[i].dataset.first_star = player.days[d].first_star
         htmlObjects[i].dataset.second_star = player.days[d].second_star
-        htmlObjects[i].dataset.second_star_offset = (player.days[d].second_star && player.days[d].first_star) ? player.days[d].second_star - player.days[d].first_star : undefined
+        htmlObjects[i].dataset.second_star_delta = (player.days[d].second_star && player.days[d].first_star) ? player.days[d].second_star - player.days[d].first_star : undefined
         htmlObjects[i].children[lastSelectedDay + 1].textContent = "*"
         htmlObjects[i].children[d + 1].textContent = player.days[d].daily_times_str.padEnd(maximumTimesLength, " ")
     }
@@ -302,7 +302,7 @@ function setupSorting() {
     p.appendChild(document.createTextNode(", "))
     p.appendChild(createButton("Second star", "second_star", 1))
     p.appendChild(document.createTextNode(" or "))
-    p.appendChild(createButton("Second star offset", "second_star_offset", 1))
+    p.appendChild(createButton("Second star delta", "second_star_delta", 1))
     p.appendChild(document.createTextNode("."))
 
 
