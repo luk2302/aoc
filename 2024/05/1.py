@@ -19,13 +19,11 @@ def solve(d: list[str]):
             orders.append(ints(l, "|"))
         else:
             k = ints(l)
-            correct = True
             for (o1, o2) in orders:
                 if o1 in k and o2 in k:
                     if k.index(o1) > k.index(o2):
-                        correct = False
                         break
-            if correct:
+            else:
                 solution += k[len(k)//2]
     return solution
 
