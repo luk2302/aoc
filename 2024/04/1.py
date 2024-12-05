@@ -1,4 +1,5 @@
 from utils.aoc import *
+from utils.simple import *
 
 
 def solve(d: list[str]):
@@ -9,8 +10,7 @@ def solve(d: list[str]):
         for dy, dx in [(1,0), (1,1), (1, -1), (0, 1)]:
             for i in range(w):
                 s = "".join([d[r+dy*x][i+dx*x] for x in range(4) if 0 <= r+dy*x < lc and 0 <= i+dx*x < w])
-                if s in {"XMAS", "SAMX"}:
-                    solution += 1
+                solution += bint(s in {"XMAS", "SAMX"})
     return solution
 
 
