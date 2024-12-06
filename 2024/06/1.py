@@ -1,13 +1,8 @@
-from functools import cache
 from utils.aoc import *
-from utils.graph import *
-from utils.simple import *
 
 
 def solve(d: list[str]):
     lc = len(d)
-    w = len(d[0])
-    solution = 0
     dir = None
 
     for r in range(0, lc, 1):
@@ -32,7 +27,6 @@ def solve(d: list[str]):
     ps = {(px, py)}
     dirs = [(0, -1), (1, 0), (0, 1), (-1, 0)]
     while True:
-        print((px, py), dir, len(ps))
         nx = px + dir[0]
         ny = py + dir[1]
         try:
