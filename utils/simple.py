@@ -1,5 +1,7 @@
-def ints(s: str, d: str = ','):
-    return [int(x.strip(' ').strip(d)) for x in s.split(d) if x]
+import re
+
+def ints(s: str):
+    return [int(x) for x in re.split('\D', s) if x]
 
 def rotate(l):  # right
     return list(map(list, zip(*l[::-1])))

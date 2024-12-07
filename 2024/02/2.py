@@ -10,7 +10,7 @@ def solve(d: list[str]):
     solution = 0
     for r in range(0, lc, 1):
         l = d[r]
-        i = ints(l, ' ')
+        i = ints(l)
         for i2 in range(len(i)):
             k = i[:i2] + i[i2+1:]
             k = list(zip(k[:-1], k[1:]))

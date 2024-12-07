@@ -16,7 +16,7 @@ def solve(d: list[str]):
             o = True
             continue
         if not o:
-            orders.append(ints(l, "|"))
+            orders.append(ints(l))
         else:
             k = ints(l)
             for (o1, o2) in orders:

@@ -10,7 +10,7 @@ def solve(d: list[str]):
     b = []
     for r in range(0, lc, 1):
         l = d[r]
-        ax, bx = ints(l, ' ')
+        ax, bx = ints(l)
         a.append(ax)
         b.append(bx)
     a.sort()

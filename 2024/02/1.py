@@ -10,7 +10,7 @@ def solve(d: list[str]):
     solution = 0
     for r in range(0, lc, 1):
         l = d[r]
-        i = ints(l, ' ')
+        i = ints(l)
         k = zip(i[:-1], i[1:])
         x = [a - b for a, b in k]
         if all(1 <= abs(z) <= 3 for z in x):
