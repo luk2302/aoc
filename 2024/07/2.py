@@ -7,13 +7,10 @@ def s(i: list[int], t):
         return i[0] == t
     if i[0] > t:
         return False
-    for o in [add, mul, concat_int]:
+    for o in [add, mul, lambda x,y: int(f"{x}{y}")]:
         if s([o(i[0], i[1])] + i[2:], t):
             return True
     return False
-
-def concat_int(x,y):
-    return int(f"{x}{y}")
 
 def solve(d: list[str]):
     lc = len(d)
