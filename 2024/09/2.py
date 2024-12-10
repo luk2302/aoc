@@ -36,10 +36,8 @@ def solve(d: list[str]):
 
     c = 0
     for e in disk:
-        if e[1] == "free":
-            c += e[0]
-            continue
-        solution += sum((c + i) * e[1] for i in range(e[0]))
+        if e[1] != "free":
+            solution += sum((c + i) * e[1] for i in range(e[0]))
         c += e[0]
     return solution
 
