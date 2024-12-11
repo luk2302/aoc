@@ -1,12 +1,15 @@
 from math import log10, ceil
 
 
-def bfs(start, target, m, valid_path, cost, full):
+def bfs(start, target, m, valid_path, cost, full, diagonal=False):
+    dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    if diagonal:
+        dirs += [(-1, -1), (1, 1), (1, -1), (-1, 1)]
     cheapest = {start: [0, [], None]}
     q = [(start, [start], {start})]
     while q:
         (e, path, path_set) = q.pop(0)
-        for (xn, yn) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+        for (xn, yn) in dirs:
             n = (xn + e[0], yn + e[1])
             if 0 <= n[0] < len(m) and 0 <= n[1] < len(m[0]):
                 if valid_path(e, n):
@@ -16,7 +19,7 @@ def bfs(start, target, m, valid_path, cost, full):
                     if cheaper:
                         cheapest[n] = [nc, path + [n], e]
 
-                    if n == target:
+                    if n == target or m[n[1]][n[0]] == target:
                         if not full:
                             return nc
                     elif n not in path_set and cheaper:
