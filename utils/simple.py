@@ -14,3 +14,6 @@ def to_str(x):
 
 def bint(b, d = 1, e = 0):
     return d if b else e
+
+def sign(i: int, zero=0):
+    return -1 if i < 0 else (1 if i > 0 else zero)

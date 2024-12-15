@@ -18,14 +18,11 @@ def solve(d: list[str]):
         py += steps * vy
         px = ((px % w) + w) % w
         py = ((py % h) + h) % h
-        qx = -1 if px < w // 2 else (1 if px > w // 2 else 0)
-        qy = -1 if py < h // 2 else (1 if py > h // 2 else 0)
-        print(px, py, qx, qy)
+        qx = sign(px - w // 2)
+        qy = sign(py - h // 2)
         if qx != 0 and qy != 0:
             qs[(qx, qy)] += 1
 
-
-    print(qs)
     return reduce(operator.mul, [y for x, y in qs.items()], 1)
 
 

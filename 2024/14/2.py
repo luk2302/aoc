@@ -30,7 +30,10 @@ def solve(d: list[str]):
 
         candidate = False
         for (px, py) in ps:
-            if (px - 1, py + 1) in ps and (px + 1, py + 1) in ps and (px + 2, py + 2) in ps and (px - 2, py + 2) in ps and (px + 3, py + 3) in ps and (px - 3, py + 3) in ps and (px + 4, py + 4) in ps and (px - 4, py + 4) in ps:
+            # apparently the top is 4+1 layers high
+            # if (px - 1, py + 1) in ps and (px + 1, py + 1) in ps and (px + 2, py + 2) in ps and (px - 2, py + 2) in ps and (px + 3, py + 3) in ps and (px - 3, py + 3) in ps and (px + 4, py + 4) in ps and (px - 4, py + 4) in ps:
+            # apparently the bottom of the tree is 10+ wide
+            if all((px + i, py) in ps for i in range(10)):
                 candidate = True
                 break
         if candidate:
