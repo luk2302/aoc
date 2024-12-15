@@ -2,25 +2,59 @@ from functools import reduce
 
 from utils.aoc import *
 
-def pa(a, walls, p, all_boxes):
+previous = None
+def pp(s, fresh=False):
+    global previous
+    if fresh:
+        previous = None
+        return
+    xs = s.strip("\n").split("\n")
+    if previous:
+        up = '\033[1A'
+        # down = '\033[1B'
+        right = '\033[1C'
+        left = '\033[1D'
+        d = up * (len(previous))
+        for y in range(len(previous)):
+            row = xs[y]
+            oll = len(previous[y])
+            nll = len(row)
+            overlap = min(nll, oll)
+            line = "".join(row[x] if row[x] != previous[y][x] else right for x in range(overlap))
+            if nll > oll:
+                line += row[oll:]
+            elif oll > nll:
+                line += " " * (oll - nll)
+            d += line + left * len(line) + "\n"
+        print(d.rstrip("\n"))
+    else:
+        for x in xs:
+            print(x)
+    previous = xs
+
+
+def pa(a, walls, p, all_boxes, step):
+    s = f"step {step}\n"
     for y in range(len(a)):
         for x in range(len(a[0])):
             if (x,y) in walls:
-                print("#", end="")
+                s += "#"
             elif (x,y) == p:
-                print("@", end="")
+                s += "@"
             elif (x,y) in all_boxes:
-                print("[", end="")
+                s += "["
             elif (x-1,y) in all_boxes:
-                print("]", end="")
+                s += "]"
             else:
-                print(".", end="")
-        print("")
-    print("------------------------")
+                s += "."
+        s += "\n"
+    pp(s)
 
 
 def solve(d: str):
+    pp("", True)
     a, m = d.split("\n\n")
+    m = m.replace("\n", "")
     s = None
     a = [list(x.replace(".", "..").replace("@", "@.").replace("#", "##").replace("O", "[]")) for x in a.split("\n")]
     walls = []
@@ -35,24 +69,22 @@ def solve(d: str):
                 all_boxes.append((x,y))
 
     p = s
-    # pa(a, walls, p, all_boxes)
-    for ms in m:
-        if ms == "\n":
-            continue
+    for mi in range(len(m)):
+        if mi < 100 or mi % 100 == 0:
+            pa(a, walls, p, all_boxes, mi)
+        ms = m[mi]
         steps = { "<": (-1, 0), ">": (1,0), "^": (0,-1), "v": (0,1) }
         s = steps[ms]
-        print("-----")
+        # print("-----")
         n = (p[0] + s[0], p[1] + s[1])
-        print("stepping", p, ms, s, n)
+        # print("stepping", p, ms, s, n)
         if n in walls:
-            print("not possible")
-            # pa(a, walls, p, all_boxes)
+            # print("not possible")
             continue
         blocking_boxes = [box for box in all_boxes if n == box or (n[0] - 1, n[1]) == box]
         if not blocking_boxes:
             p = n
-            print("easily possible")
-            # pa(a, walls, p, all_boxes)
+            # print("easily possible")
             continue
 
         boxes = [blocking_boxes]
@@ -63,29 +95,29 @@ def solve(d: str):
             for box in boxes[layer]:
                 nbp = (box[0] + s[0], box[1] + s[1])
                 if nbp in walls or (nbp[0] + 1, nbp[1]) in walls:
-                    print("not possible to shift")
+                    # print("not possible to shift")
                     impossible = True
                     break
                 blocking = [bbox for bbox in all_boxes if bbox != box and (nbp == bbox or (nbp[0] - 1, nbp[1]) == bbox or (nbp[0] + 1, nbp[1]) == bbox)]
                 if not blocking:
-                    print("box shift possible")
+                    # print("box shift possible")
                     continue
                 else:
                     for b in blocking:
                         new_layer.add(b)
             if impossible:
-                print("box shift ultimately impossible")
-                # pa(a, walls, p, all_boxes)
+                # print("box shift ultimately impossible")
                 break
             if not new_layer:
-                print("shifting")
-                moving = list(reduce(lambda x, y: x + y, boxes, []))
+                # print("shifting")
+                moving = set(reduce(lambda a, b: a + b, boxes, []))
                 all_boxes = [box if box not in moving else (box[0] + s[0], box[1] + s[1]) for box in all_boxes]
                 p = n
-                # pa(a, walls, p, all_boxes)
                 break
             boxes.append(list(new_layer))
             layer += 1
+
+    pa(a, walls, p, all_boxes, "done")
 
     solution = 0
     for x, y in all_boxes:
