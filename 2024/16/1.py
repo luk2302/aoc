@@ -1,10 +1,8 @@
 from utils.aoc import *
-from utils.graph import *
 
 # oh my god, that code is bad
 def bfs(start, target, m, valid_path, cost, full):
     dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    # cheapest = {start: {(1,0): [0, [], None], (-1,0): [2000, [], None], (0,1): [1000, [], None], (0,-1): [1000, [], None]}}
     cheapest = {(start, (1,0)): [0, [], None, (1,0)], (start, (-1,0)): [2000, [], None, (1,0)], (start, (0,1)): [1000, [], None, (1,0)], (start, (0,-1)): [1000, [], None, (1,0)]}
     q = [(start, [start], {start}, (1,0))]
     while q:
@@ -17,7 +15,6 @@ def bfs(start, target, m, valid_path, cost, full):
                 if valid_path(e, n):
                     print("  stepping to", n, "in", move_dir)
                     rots_now = 0 if move_dir == looking else (2 if looking[0] == xn or looking[1] == yn else 1)
-                    # rots_pre = 0 if move_dir == old_move_dir or not old_move_dir else (2 if old_move_dir[0] == xn or old_move_dir[1] == yn else 1)
                     for new_look_dir in dirs:
                         print("    rotating to dir", new_look_dir)
                         rots_next = 2 if new_look_dir == (-move_dir[0], -move_dir[1]) else (0 if new_look_dir == move_dir else 1)
@@ -53,8 +50,6 @@ def solve(d: list[str]):
                 e = (x,r)
 
     c = bfs(s, "E", d, lambda f, t: d[t[1]][t[0]] != "#", lambda f,t: 1, True)
-    # for p, cp in c.items():
-    #     print(p, cp)
 
     mi = None
     for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
