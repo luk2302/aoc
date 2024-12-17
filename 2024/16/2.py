@@ -3,10 +3,10 @@ from utils.aoc import *
 # somehow the code managed to get even worse compared to part 1, not even gonna bother to clean it up
 def bfs(start, m):
     dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    cheapest = {(start, (1,0)): [0, set(), None, (1,0)], (start, (-1,0)): [2000, set(), None, (1,0)], (start, (0,1)): [1000, set(), None, (1,0)], (start, (0,-1)): [1000, set(), None, (1,0)]}
-    q = [(start, (start,), {start}, (1,0), 0)]
+    cheapest = {(start, (1,0)): [0, set()], (start, (-1,0)): [2000, set()], (start, (0,1)): [1000, set()], (start, (0,-1)): [1000, set()]}
+    q = [(start, (start,), {start}, (1,0))]
     while q:
-        (e, path, path_set, looking, old_cost) = q.pop(0)
+        (e, path, path_set, looking) = q.pop(0)
         for move_dir in dirs:
             (xn, yn) = move_dir
             n = (xn + e[0], yn + e[1])
@@ -22,14 +22,14 @@ def bfs(start, m):
                         cheaper = not oc or nc < oc[0]
                         pt = (*path, n)
                         if cheaper:
-                            cheapest[(n, new_look_dir)] = [nc, {pt}, e]
+                            cheapest[(n, new_look_dir)] = [nc, {pt}]
                         elif oc and nc == oc[0]:
                             cheapest[(n, new_look_dir)][1].add(pt)
 
                         if m[n[1]][n[0]] == "E":
                             endpos = n
                         elif cheaper:
-                            q.append((n, pt, path_set.union({n}), new_look_dir, nc))
+                            q.append((n, pt, path_set.union({n}), new_look_dir))
 
     cps = None
     for di in dirs:
@@ -61,8 +61,10 @@ def bfs(start, m):
 
     for y in range(len(m)):
         for x in range(len(m[y])):
-            if m[y][x] in "SE#":
+            if m[y][x] == "#":
                 print(m[y][x], end="")
+            elif m[y][x] in "SE":
+                print(f"\x1b[6;30;42m{m[y][x]}\x1b[0m", end="")
             elif (x,y) in ps:
                 print("\x1b[6;30;42mO\x1b[0m", end="")
             else:
