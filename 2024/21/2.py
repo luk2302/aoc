@@ -50,12 +50,8 @@ def get_paths(from_p, to_p, loci):
     return [xpath + ypath, ypath + xpath]
 
 @cache
-def pl_to(from_, to):
-    return get_paths(dir_locations[from_], dir_locations[to], 1)
-
-@cache
 def pl(from_, to, num_parents):
-    ppp = pl_to(from_, to)
+    ppp = get_paths(dir_locations[from_], dir_locations[to], 1)
     if num_parents == 0:
         return len(ppp[0]) + 1
     if from_ == to:
