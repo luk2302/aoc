@@ -12,6 +12,7 @@ from urllib.parse import urlencode
 
 year = sys.argv[1]
 day = sys.argv[2]
+force = len(sys.argv) > 3 and sys.argv[3] == "force"
 day_path = os.path.join(sys.path[0], year, day.zfill(2))
 parts = {
     1: {
@@ -114,6 +115,10 @@ class SolutionChangeHandler(FileSystemEventHandler):
 
 
     def submit_solution(self):
+        if force:
+            self.submitted_successfully = True
+            return
+
         with open(parts[self.part]['answer_path']) as f:
             solution = f.read()
 
@@ -170,12 +175,12 @@ def main():
     while not load_day():
         pass
 
-    if not os.path.exists(parts[1]["answer_path"]):
+    if not os.path.exists(parts[1]["answer_path"]) or force:
         run_day_solution_part(1)
-        if not os.path.exists(parts[2]["path"]):
+        if not os.path.exists(parts[2]["path"]) and not force:
             prepare_part_two()
 
-    if not os.path.exists(parts[2]["answer_path"]):
+    if not os.path.exists(parts[2]["answer_path"]) or force:
         run_day_solution_part(2)
 
     print("\nBoth parts complete")
